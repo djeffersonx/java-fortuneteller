@@ -9,7 +9,6 @@
 		<version>2.2.6.RELEASE</version>
 		<relativePath />
 	</parent>
-
 	<groupId>br.com.fortuneteller</groupId>
 	<artifactId>fortuneteller-zuul</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
