@@ -2,6 +2,7 @@ package br.com.fortuneteller.predictor.domain.model;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -23,19 +24,21 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "coreconomicindicsectorindex")
-public class CorrelationEconomicIndicatorSectorIndex {
+@Table(name = "correlationmarketcontainer")
+public class CorrelationMarketContainer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 
 	@ManyToOne
-	@JoinColumn(name = "ideconomicindicator", nullable = false, foreignKey = @ForeignKey(name = "fkcorecidcscidxideconidc"))
-	private EconomicIndicator economicIndicator;
+	@JoinColumn(name = "idmarketcontainermain", foreignKey = @ForeignKey(name = "fkcorrmktctnridmktctnrmain"), nullable = true)
+	private MarketContainer mainMarketContainer;
 
 	@ManyToOne
-	@JoinColumn(name = "idsectorindex", nullable = false, foreignKey = @ForeignKey(name = "fkcorecidcscidxidsecidex"))
-	private SectorIndex sectorIndex;
+	@JoinColumn(name = "idmarketcontainerrelated", foreignKey = @ForeignKey(name = "fkcorrmktctnridmktctnrrelated"), nullable = true)
+	private MarketContainer relatedMarketContainer;
 
+	@Column(name = "correlation", nullable = false)
+	private Integer correlation = 0;
 }
