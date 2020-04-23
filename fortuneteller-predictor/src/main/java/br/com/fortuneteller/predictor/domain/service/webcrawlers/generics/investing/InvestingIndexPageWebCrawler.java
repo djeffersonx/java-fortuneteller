@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import br.com.fortuneteller.predictor.domain.model.MarketContainer;
 import br.com.fortuneteller.predictor.domain.model.MarketContainerIndicator;
 import br.com.fortuneteller.predictor.domain.model.enums.EnumMarketContainerIndexType;
 import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.AbstractMarketIndexWebCrawler;
+import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.WebCrawler;
 
 public abstract class InvestingIndexPageWebCrawler extends AbstractMarketIndexWebCrawler {
 
@@ -45,8 +45,8 @@ public abstract class InvestingIndexPageWebCrawler extends AbstractMarketIndexWe
 		return indicator;
 	}
 
-	private BigDecimal getValue() throws IOException {
-		Document document = Jsoup.connect(url).get();
+	private BigDecimal getValue() throws IOException, InterruptedException {
+		Document document = WebCrawler.get(url);
 		String valueString = document.select("section .overViewBox.instrument .parentheses").text();
 		return new BigDecimal(valueString.replaceAll("\\%", ""));
 	}

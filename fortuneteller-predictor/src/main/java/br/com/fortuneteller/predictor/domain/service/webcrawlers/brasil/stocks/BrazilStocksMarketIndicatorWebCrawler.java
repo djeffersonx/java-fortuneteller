@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
@@ -15,6 +14,7 @@ import br.com.fortuneteller.predictor.domain.model.MarketContainer;
 import br.com.fortuneteller.predictor.domain.model.MarketContainerIndicator;
 import br.com.fortuneteller.predictor.domain.model.enums.EnumMarketContainerIndexType;
 import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.AbstractMarketIndexWebCrawler;
+import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.WebCrawler;
 
 @Component
 public class BrazilStocksMarketIndicatorWebCrawler extends AbstractMarketIndexWebCrawler {
@@ -40,14 +40,12 @@ public class BrazilStocksMarketIndicatorWebCrawler extends AbstractMarketIndexWe
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String investingBaseUrl = "https://br.investing.com";
-		Document baseStocksPage = Jsoup.connect(investingBaseUrl + "/equities/brazil").get();
+		Document baseStocksPage = WebCrawler.get(investingBaseUrl + "/equities/brazil");
 		ArrayList<Element> tableRows = baseStocksPage.select(".marketInnerContent tr");
 
 		for (Element element : tableRows) {
 
-			Thread.currentThread().sleep(500);
-
-			Document stockPage = Jsoup.connect(investingBaseUrl + element.select("a").attr("href")).get();
+			Document stockPage = WebCrawler.get(investingBaseUrl + element.select("a").attr("href"));
 
 			String stockKey = StringUtils.substringBetween(stockPage.select(".instrumentHead h1").text(), "(", ")");
 			String valueString = stockPage.select("section .overViewBox.instrument .parentheses").text();
