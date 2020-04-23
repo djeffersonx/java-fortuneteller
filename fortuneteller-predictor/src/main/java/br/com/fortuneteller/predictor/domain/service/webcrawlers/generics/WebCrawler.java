@@ -11,5 +11,5 @@ public class WebCrawler {
 		Thread.currentThread().sleep(500);
 		return Jsoup.connect(url).get();
 	}
-	
+
 }
