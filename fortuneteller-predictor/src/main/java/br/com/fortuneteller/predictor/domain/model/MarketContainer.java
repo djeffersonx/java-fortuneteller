@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
@@ -45,5 +47,15 @@ public class MarketContainer {
 
 	@OneToMany(mappedBy = "marketContainer")
 	private Set<MarketContainerIndicator> indicators;
+
+	public MarketContainer(String name, String key) {
+		this.name = name;
+		this.key = key;
+	}
+
+	public MarketContainer(String name, String key, MarketContainer parentMarketContainer) {
+		this(name, key);
+		this.parentMarketContainer = parentMarketContainer;
+	}
 
 }
