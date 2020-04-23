@@ -47,8 +47,8 @@ public class MarketContainerIndicator {
 	@JoinColumn(name = "idmarketcontainer", nullable = false, foreignKey = @ForeignKey(name = "fkmktctnridxidmktctnr"))
 	private MarketContainer marketContainer;
 
-	@Column(name = "actualvalue", nullable = true)
-	private BigDecimal actualValue;
+	@Column(name = "value", nullable = true)
+	private BigDecimal value;
 
 	@Column(name = "expectedvalue", nullable = true)
 	private BigDecimal expectedValue;
@@ -60,7 +60,7 @@ public class MarketContainerIndicator {
 	private BigDecimal ratioValue;
 
 	@Column(name = "actual", nullable = false)
-	private boolean actual = false;
+	private Boolean actual = false;
 
 	@Column(name = "datastartvalidity", nullable = false)
 	private Date startValidity;
