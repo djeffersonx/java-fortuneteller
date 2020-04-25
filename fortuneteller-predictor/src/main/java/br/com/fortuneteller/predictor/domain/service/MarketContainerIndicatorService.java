@@ -24,15 +24,15 @@ public class MarketContainerIndicatorService {
 	}
 
 	@Transactional
-	public void createActual(MarketContainerIndicator entity, String marketContainerKey) {
-
+	public void createActual(MarketContainerIndicator entity) {
 		markActualAsFalse().ifPresent(previous -> {
 			entity.setPreviousValue(previous.getValue());
 			entity.setRatioValue(entity.getValue().divide(entity.getPreviousValue()));
 		});
 
 		entity.setActual(true);
-		entity.setMarketContainer(marketContainerService.findByKey(marketContainerKey));
+		entity.setMarketContainer(marketContainerService.findByKey(entity.getMarketContainer().getKey()));
+
 		save(entity);
 	}
 

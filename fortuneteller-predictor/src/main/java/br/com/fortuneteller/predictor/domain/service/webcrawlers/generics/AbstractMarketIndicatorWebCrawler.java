@@ -1,5 +1,7 @@
 package br.com.fortuneteller.predictor.domain.service.webcrawlers.generics;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.fortuneteller.predictor.domain.model.MarketContainerIndicator;
@@ -7,20 +9,20 @@ import br.com.fortuneteller.predictor.domain.service.MarketContainerIndicatorSer
 import lombok.extern.java.Log;
 
 @Log
-public abstract class AbstractMarketIndexWebCrawler {
+public abstract class AbstractMarketIndicatorWebCrawler {
 
 	@Autowired
 	private MarketContainerIndicatorService marketContainerIndicatorService;
 
-	public abstract String getMarketContainerKey();
-
-	public abstract MarketContainerIndicator getIndicator() throws Exception;
+	public abstract List<MarketContainerIndicator> getIndicators() throws Exception;
 
 	public void run() {
 		try {
-			marketContainerIndicatorService.createActual(getIndicator(), getMarketContainerKey());
+			getIndicators().forEach(e -> {
+				marketContainerIndicatorService.createActual(e);
+			});
 		} catch (Exception e) {
-			log.throwing(AbstractMarketIndexWebCrawler.class.getName(), "run", e);
+			log.throwing(AbstractMarketIndicatorWebCrawler.class.getName(), "run", e);
 		}
 	}
 

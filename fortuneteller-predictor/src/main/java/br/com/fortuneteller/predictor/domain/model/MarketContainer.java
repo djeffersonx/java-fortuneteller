@@ -58,4 +58,8 @@ public class MarketContainer {
 		this.parentMarketContainer = parentMarketContainer;
 	}
 
+	public MarketContainer(String key) {
+		this.key = key;
+	}
+
 }

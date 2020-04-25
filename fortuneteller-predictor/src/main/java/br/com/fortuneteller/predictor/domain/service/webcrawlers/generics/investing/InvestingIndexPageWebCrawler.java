@@ -2,17 +2,21 @@ package br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.inves
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.jsoup.nodes.Document;
 
 import br.com.fortuneteller.predictor.domain.model.MarketContainer;
 import br.com.fortuneteller.predictor.domain.model.MarketContainerIndicator;
 import br.com.fortuneteller.predictor.domain.model.enums.EnumMarketContainerIndexType;
-import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.AbstractMarketIndexWebCrawler;
+import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.AbstractMarketIndicatorWebCrawler;
 import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.WebCrawler;
+import lombok.extern.java.Log;
 
-public abstract class InvestingIndexPageWebCrawler extends AbstractMarketIndexWebCrawler {
+@Log
+public abstract class InvestingIndexPageWebCrawler extends AbstractMarketIndicatorWebCrawler {
 
 	private final String marketContainerKey;
 	private final String name;
@@ -26,29 +30,26 @@ public abstract class InvestingIndexPageWebCrawler extends AbstractMarketIndexWe
 		this.url = url;
 	}
 
-	public String getMarketContainerKey() {
-		return this.marketContainerKey;
-	}
-
-	public MarketContainerIndicator getIndicator() throws Exception {
+	public List<MarketContainerIndicator> getIndicators() throws Exception {
 		MarketContainerIndicator indicator = new MarketContainerIndicator();
 
 		indicator.setName(name);
 		indicator.setKey(key);
-
 		indicator.setStartValidity(new Date());
 		indicator.setFinishValidity(new Date());
 		indicator.setType(EnumMarketContainerIndexType.MAIN);
 		indicator.setValue(getValue());
-		indicator.setMarketContainer(new MarketContainer());
+		indicator.setMarketContainer(new MarketContainer(marketContainerKey));
 
-		return indicator;
+		log.info("Get data from url: " + url + ", data: " + indicator);
+
+		return Collections.singletonList(indicator);
 	}
 
 	private BigDecimal getValue() throws IOException, InterruptedException {
 		Document document = WebCrawler.get(url);
 		String valueString = document.select("section .overViewBox.instrument .parentheses").text();
-		return new BigDecimal(valueString.replaceAll("\\%", ""));
+		return new BigDecimal(valueString.replaceAll("\\%", "").replaceAll(",", "."));
 	}
 
 }

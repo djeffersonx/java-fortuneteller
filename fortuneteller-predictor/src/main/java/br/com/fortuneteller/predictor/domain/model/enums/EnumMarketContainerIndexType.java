@@ -2,6 +2,8 @@ package br.com.fortuneteller.predictor.domain.model.enums;
 
 public enum EnumMarketContainerIndexType {
 
-	MAIN
+	MAIN, //
+	COUNTRY, //
+	STOCK;
 
 }
