@@ -20,11 +20,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -47,7 +44,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
 		oauthServer.tokenKeyAccess("permitAll()") //
 				.checkTokenAccess("isAuthenticated()") //
-				.passwordEncoder(passwordEncoder);
+				.passwordEncoder(passwordEncoder());
 	}
 
 }
