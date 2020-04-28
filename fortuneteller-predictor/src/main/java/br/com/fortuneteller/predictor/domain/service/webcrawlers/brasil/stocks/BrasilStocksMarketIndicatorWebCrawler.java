@@ -17,7 +17,7 @@ import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.Abstra
 import br.com.fortuneteller.predictor.domain.service.webcrawlers.generics.WebCrawler;
 
 @Component
-public class BrazilStocksMarketIndicatorWebCrawler extends AbstractMarketIndicatorWebCrawler {
+public class BrasilStocksMarketIndicatorWebCrawler extends AbstractMarketIndicatorWebCrawler {
 
 	private static final String INVESTING_URL = "https://br.investing.com";
 
