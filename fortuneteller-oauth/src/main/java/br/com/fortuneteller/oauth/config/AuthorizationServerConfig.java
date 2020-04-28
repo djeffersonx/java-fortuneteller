@@ -27,7 +27,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Autowired
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory()//
+		clients.inMemory() //
 				.withClient("client") //
 				.secret(passwordEncoder().encode("client")) //
 				.scopes("any") //

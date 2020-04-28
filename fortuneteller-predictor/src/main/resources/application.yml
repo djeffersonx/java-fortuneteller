@@ -1,0 +1,60 @@
+spring:
+   application:
+      name: fortuneteller-predictor
+   main:
+      allow-bean-definition-overriding: true
+   cloud:
+      config:
+         retry:
+            initialInterval: 100
+            multiplier: 1.1
+            maxInterval: 100
+            maxAttempts: 10
+server:
+   port: 5001
+eureka:
+   instance:
+      instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+      statusPageUrlPath: /actuator/info
+      healthCheckUrlPath: /actuator/health
+      preferIpAddress: true
+   client:
+      healthcheck:
+         enabled: true
+      serviceUrl:
+         defaultZone: ${EUREKA_URL:http://localhost:8761}/eureka
+security:
+   oauth2:
+      client:
+         access-token-uri: ${GATEWAY_URL:http://localhost:8080}/api/oauth/token
+         client-id: client
+         client-secret: client
+         user-authorization-uri: ${GATEWAY_URL:http://localhost:8080}/api/oauth/authorize
+      resource:
+         id: fortuneteller-predictor
+         prefer-token-info: false
+         user-info-uri: ${GATEWAY_URL:http://localhost:8080}/api/oauth/user
+management:
+   metrics:
+      export:
+         prometheus:
+            enabled: true
+   endpoints:
+      web:
+         exposure:
+            include: health,info,metrics #,routes,filters,logfile
+info:
+   app:
+      name: '@project.artifactId@'
+      description: '@project.description@'
+   build:
+      groupId: '@project.groupId@'
+      artifact: '@project.artifactId@'
+      name: '@project.name@'
+      version: '@project.version@'
+      encoding: '@project.build.sourceEncoding@'
+   env:
+      java:
+         vendor: ${java.specification.vendor}
+         vm-name: ${java.vm.name}
+         runtime-version: ${java.runtime.version}
