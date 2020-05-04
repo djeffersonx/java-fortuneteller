@@ -1,59 +1,92 @@
-version: '3.3'
+version: '3.5'
 services:
 
-  fortuneteller-eureka:
-    build:
-      context: ./fortuneteller-eureka
-    container_name: fortuneteller-eureka
-    ports:
-      - 8761:8761
-    networks:
-      - fortuneteller-network
-
-  fortuneteller-oauth:
-    build:
-      context: ./fortuneteller-oauth
-    container_name: fortuneteller-oauth
-    ports:
-      - 5000:5000
-    depends_on: 
-      - fortuneteller-eureka
-    links:
-      - fortuneteller-eureka
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    container_name: zookeeper
+    restart: unless-stopped
     environment:
-      - EUREKA_URL=http://fortuneteller-eureka:8761
+      ZOOKEEPER_CLIENT_PORT: 2181
+    healthcheck:
+      test: "echo stat | nc localhost $$ZOOKEEPER_CLIENT_PORT"
+      start_period: 30s
     networks:
       - fortuneteller-network
 
-  fortuneteller-predictor:
-    build:
-      context: ./fortuneteller-predictor
-    container_name: fortuneteller-predictor
-    ports:
-      - 5001:5001
+  kafka:
+    image: confluentinc/cp-kafka
+    container_name: kafka
+    restart: unless-stopped
     depends_on:
-      - fortuneteller-eureka
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
     environment:
-      - EUREKA_URL=http://fortuneteller-eureka:8761
-      - GATEWAY_URL=http://fortuneteller-gateway:8080
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
+      start_period: 30s
     networks:
       - fortuneteller-network
 
-  fortuneteller-gateway:
-    build:
-      context: ./fortuneteller-gateway
-    container_name: fortuneteller-gateway
-    ports:
-      - 8080:8080
-    depends_on:
-      - fortuneteller-eureka
-      - fortuneteller-oauth
-      - fortuneteller-predictor
-    environment:
-      - EUREKA_URL=http://fortuneteller-eureka:8761
-      - OAUTH_HOST=http://fortuneteller-oauth:5000
-    networks:
-      - fortuneteller-network
+  # fortuneteller-eureka:
+  #   build:
+  #     context: ./fortuneteller-eureka
+  #   container_name: fortuneteller-eureka
+  #   ports:
+  #     - 8761:8761
+  #   networks:
+  #     - fortuneteller-network
+
+  # fortuneteller-oauth:
+  #   build:
+  #     context: ./fortuneteller-oauth
+  #   container_name: fortuneteller-oauth
+  #   ports:
+  #     - 5000:5000
+  #   depends_on: 
+  #     - fortuneteller-eureka
+  #   links:
+  #     - fortuneteller-eureka
+  #   environment:
+  #     - EUREKA_URL=http://fortuneteller-eureka:8761
+  #   networks:
+  #     - fortuneteller-network
+
+  # fortuneteller-predictor:
+  #   build:
+  #     context: ./fortuneteller-predictor
+  #   container_name: fortuneteller-predictor
+  #   ports:
+  #     - 5001:5001
+  #   depends_on:
+  #     - fortuneteller-eureka
+  #   environment:
+  #     - EUREKA_URL=http://fortuneteller-eureka:8761
+  #     - GATEWAY_URL=http://fortuneteller-gateway:8080
+  #   networks:
+  #     - fortuneteller-network
+
+  # fortuneteller-gateway:
+  #   build:
+  #     context: ./fortuneteller-gateway
+  #   container_name: fortuneteller-gateway
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - fortuneteller-eureka
+  #     - fortuneteller-oauth
+  #     - fortuneteller-predictor
+  #   environment:
+  #     - EUREKA_URL=http://fortuneteller-eureka:8761
+  #     - OAUTH_HOST=http://fortuneteller-oauth:5000
+  #   networks:
+  #     - fortuneteller-network
 
 networks:
   fortuneteller-network:

@@ -24,7 +24,7 @@
 		<module>fortuneteller-eureka</module>
 		<module>fortuneteller-gateway</module>
 		<module>fortuneteller-oauth</module>
-		<module>fortuneteller-predictor</module>
+		<module>fortuneteller-marketdata</module>
 	</modules>
 
 	<dependencyManagement>
